@@ -81,16 +81,38 @@ previousYear]
   * and saving transactions to my 'transactions.csv'
 
     private static void addDeposit(Scanner scanner, ArrayList<
-Transaction> transactions){
+Transaction> transactions){ [passing through our method ]
+    [passes user input into our arraylist of Transaction objects]
     sout ("enter date for deposit (yyyy-mm-dd):  ");
     String date = scanner.nextLine();
 [do the same for time(hh:mm:ss), description, vendor, amount]
 [also need a .add]? need to lookup how to? or ask greg?
 
-
-
-
 }
+    private static void payment(Scanner scanner, ArrayList<
+Transaction> transactions){ 
+
+[same as the above method, must add println and String scanner 
+for date, time, description, vendor, amount, and a way to add the
+payment with .add? and a payment made message]
+
+private static void viewLedger (ArrayList<Transaction>
+transactions){}
+[only need to pass through the arraylist for viewing the list of objects]
+    sout("Transactions :");
+    sout("Date | Time | Description | Vendor | Amount");
+[need to iterate through users transactions, will use a : lambda 
+and a for loop, using the : allows for me to pass the argument 
+ie (args for function - Transaction transaction : transactions)
+{curly braces will hold my params for the args I placed - 
+souf- use printf here to force specific print style and format
+("%s | %s | %s  | %s | %.2f\n",
+transaction.getDate(), transaction.getTime(), transaction.getDescription(),
+transaction.getVendor(), transaction.getAmount())}
+sout ("");]
+    
+
+
 
     
 
