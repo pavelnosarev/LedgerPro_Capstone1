@@ -44,7 +44,7 @@ previousYear, searchByVendor, backToMainMenu]
 
   * create a main class inside our LedgerPro  : 
 
-    public static void main(String[] args) throws  IOException { } 
+    public static void main(String[] args) throws FileNotFoundException { } 
   
   * create Scanner scanner = new Scanner (System.in); [takes in user input];
     * need an ArrayList to store the items :
@@ -52,6 +52,10 @@ previousYear, searchByVendor, backToMainMenu]
   * need to use a do {} while loop to show the menu for my users 
   ### SOUT is shortcut for System.out.println()
 maybe do a while(true)]?
+    
+    public static void main(String[] args) throws FileNotFoundException {
+        Scanner scanner = new Scanner(System.in);
+        ArrayList<Transaction> transactions = new ArrayList<>();
 
 #### menu
     
