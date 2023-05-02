@@ -39,8 +39,8 @@ previousYear, searchByVendor, backToMainMenu]
 
 *public class LedgerPro 
 
-    [private static final String TRANSACTION_FILE ="transactions.csv"; 
-[to read the csv file] ]
+    private static final String TRANSACTION_FILE ="transactions.csv"; 
+[to read the csv file] 
 
   * create a main class inside our LedgerPro  : 
 
@@ -54,17 +54,22 @@ previousYear, searchByVendor, backToMainMenu]
 maybe do a while(true)]?
 
 #### menu
+    
+    public static void main(String[] args) throws FileNotFoundException {
+        Scanner scanner = new Scanner(System.in);
+        ArrayList<Transaction> transactions = new ArrayList<>();
 
 
+    while (true){  
+            System.out.println("here are our options: ");
+            System.out.println("\tD add deposit");
+            System.out.println("\tP make payment");
+            System.out.println("\tL view ledger");
+            System.out.println("\tR reports menu");
+            System.out.println("\tQ quit app");
 
-            while (true){  
-            sout ("here are our options: ");
-            sout("\tD add deposit");
-            sout("\tP make payment");
-            sout("\tL view ledger");
-            sout("\tQ quit app");
+        String input = scanner.nextLine(); // variable for user input through scanner 
 
-  *    need var for user input: [String input = scanner.nextLine();]
   * switch statement to allow different paths depending on user input
 
 ### switch
@@ -83,7 +88,7 @@ maybe do a while(true)]?
                     sout("quitting application");
                     return;
                 default:
-                    sout("nope that's not an option try again");
+                     System.out.println("nope that's not an option try again");
 
                 }
             }
@@ -323,10 +328,9 @@ and a for loop, using the : allows for me to pass the argument]
 
 
 
+### Trasnaction class 
 
 
-
-sout ("");]
     
 
 
