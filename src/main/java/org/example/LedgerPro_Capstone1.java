@@ -1,16 +1,33 @@
 package org.example;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.*;
 
+import static java.time.LocalDate.now;
+
 public class LedgerPro_Capstone1 {
 
-    private static final String TRANSACTIONS_FILE = "transactions.csv";
+    static ArrayList<Transaction> transactions = new ArrayList<>();
+    static String TRANSACTIONS_FILE = "transactions.txt";
+    static Scanner scanner = new Scanner(System.in);
+    static LocalDate today = now();
+//    static FileWriter writer;
+//
+//    static {
+//        try {
+//            writer = new FileWriter("transactions.txt");
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
-    public static void main(String[] args) throws FileNotFoundException {
-        Scanner scanner = new Scanner(System.in);
-        ArrayList<Transaction> transactions = new ArrayList<>();
+    public static void main(String[] args) throws FileNotFoundException{
+
+//        FileWriter writer = new FileWriter("transactions.txt");
 
         while (true) {
             System.out.println("What do you want?");
@@ -22,7 +39,7 @@ public class LedgerPro_Capstone1 {
 
             String choice = scanner.nextLine();
 
-            switch (choice) {
+            switch (choice.toUpperCase()) {
                 case "D":
                     addDeposit(scanner, transactions);
                     break;
@@ -35,7 +52,7 @@ public class LedgerPro_Capstone1 {
                 case "R":
                     reportsMenu(scanner, transactions);
                     break;
-                case "X":
+                case "Q":
                     System.out.println("quitting app, bye bye");
                     return;
                 default:
@@ -43,7 +60,7 @@ public class LedgerPro_Capstone1 {
             }
         }
     }
-    private static void reportsMenu(Scanner scanner, ArrayList <Transaction> transactions){
+    private static void reportsMenu(Scanner scanner, ArrayList<Transaction> transactions){
 
         System.out.println("Which report do you need?");
         System.out.println("\t1 for month to date");
@@ -53,47 +70,92 @@ public class LedgerPro_Capstone1 {
         System.out.println("\t5 search by vendor");
         System.out.println("\t6 go back");
 
-        int subInput = scanner.nextInt();
+        int choice = scanner.nextInt();
 
-        switch (subInput) {
+        switch (choice) {
             case 1:
-                monthToDateReport(transactions); // call on transactions to show the monthtodate
+                List<Transaction> monthToDateTransactions =
+                        getTransactionsBetweenDates(transactions,
+                                now().minusMonths(1), now());
+                for (Transaction transaction : monthToDateTransactions) {
+                    System.out.println(transaction);
+                }
                 break;
             case 2:
-                previousMonthReport(transactions);
+                List<Transaction> previousMonthTransactions =
+                        getTransactionsBetweenDates(transactions,
+                                now().minusMonths(2),
+                                now().minusMonths(1));
+                for (Transaction transaction : previousMonthTransactions) {
+                    System.out.println(transaction);
+                }
                 break;
             case 3:
-                ytdReport(transactions);
+                List<Transaction> yearToDateTransactions =
+                        getTransactionsBetweenDates(transactions,
+                                now().minusYears(1), now());
+                for (Transaction transaction : yearToDateTransactions) {
+                    System.out.println(transaction);
+                }
                 break;
             case 4:
-                previousYearsReports(transactions);
+                List<Transaction> previousYearTransactions =
+                        getTransactionsBetweenDates(transactions,
+                                now().minusYears(2),
+                                now().minusYears(1));
+                for (Transaction transaction : previousYearTransactions) {
+                    System.out.println(transaction);
+                }
                 break;
             case 5:
-                searchByVendor(transactions);
+                System.out.println("Enter the name of the vendor:");
+                String vendorName = scanner.nextLine();
+                List<Transaction> vendorTransactions =
+                        getTransactionsByVendor(transactions, vendorName);
+                for (Transaction transaction : vendorTransactions) {
+                    System.out.println(transaction);
+                }
                 break;
             case 6:
                 return;
             default:
-                System.out.println("nope try again");
+                System.out.println("Nope, that is not an option.");
+                break;
         }
+    }
 
+    public static List<Transaction> getTransactionsBetweenDates(
+            List<Transaction> transactions, LocalDate startDate, LocalDate endDate) {
+        List<Transaction> filteredTransactions = new ArrayList<>();
+        for (Transaction transaction : transactions) {
+            LocalDate transactionDate = LocalDate.parse(transaction.getDate());
+            if (transactionDate.compareTo(startDate) >= 0 && transactionDate.compareTo(endDate) <= 0) {
+                filteredTransactions.add(transaction);
+            }
+        }
+        return filteredTransactions;
+    }
+
+    public static List<Transaction> getTransactionsByVendor(
+            List<Transaction> transactions, String vendorName) {
+        List<Transaction> filteredTransactions = new ArrayList<>();
+        for (Transaction transaction : transactions) {
+            if (transaction.getVendor().equals(vendorName)) {
+                filteredTransactions.add(transaction);
+            }
+        }
+        return filteredTransactions;
     }
 
 
-
-
-
-
-
-
     private static void addDeposit(Scanner scanner, ArrayList<Transaction> transactions) {
-        System.out.println("Enter the date of the deposit (YYYY-MM-DD):");
+        System.out.println("date of the deposit (YYYY-MM-DD):");
         String date = scanner.nextLine();
 
-        System.out.println("Enter the time of the deposit (HH:MM:SS):");
+        System.out.println("time of deposit (HH:MM:SS):");
         String time = scanner.nextLine();
 
-        System.out.println("Enter the description of the deposit:");
+        System.out.println("description of deposit: ");
         String description = scanner.nextLine();
 
         System.out.println("Enter the vendor of the deposit:");
@@ -153,19 +215,6 @@ public class LedgerPro_Capstone1 {
         System.out.println("");
     }
 
-//    private static void monthToDateReport(ArrayList<Transaction> transactions) {
-//        System.out.println("Please enter the start date of the report (YYYY-MM-DD):");
-//        Scanner scanner = new scanner{};
-//        String startDate = scanner.nextLine();
-//        System.out.println("Please enter the end date of the report (YYYY-MM-DD):");
-//        String endDate = scanner.nextLine();
-
-//        List<Transaction> monthToDateTransactions =
-//                getTransactionsBetweenDates(transactions, startDate, endDate);
-//        for (Transaction transaction : monthToDateTransactions) {
-//            System.out.println(transaction);
-//        }
-//    }
 
 
 }
