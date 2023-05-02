@@ -1,21 +1,26 @@
-package org.example;
+package com.pn;
 
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.*;
+import java.io.*
 
 import static java.time.LocalDate.now;
+
+
 
 public class LedgerPro_Capstone1 {
 
     static ArrayList<Transaction> transactions = new ArrayList<>();
-    static String TRANSACTIONS_FILE = "transactions.txt";
+//    static String TRANSACTIONS_FILE = "transactions.txt";
     static Scanner scanner = new Scanner(System.in);
     static LocalDate today = now();
-//    static FileWriter writer;
+    static FileWriter writer;
+    static FileReader reader;
+    static boolean append;
 //
 //    static {
 //        try {
@@ -24,10 +29,12 @@ public class LedgerPro_Capstone1 {
 //            throw new RuntimeException(e);
 //        }
 //    }
+//        static writer = new FileWriter("./src/main/java/com/pn/transactions.txt\n", true);
+    public static void main(String[] args) throws IOException {
 
-    public static void main(String[] args) throws FileNotFoundException{
-
-//        FileWriter writer = new FileWriter("transactions.txt");
+//        boolean append;
+//        writer = new FileWriter("./src/main/java/com/pn/transactions.txt\n", true);
+//        reader = new FileReader("./src/main/java/com/pn/transactions.txt\n");
 
         while (true) {
             System.out.println("What do you want?");
@@ -148,7 +155,10 @@ public class LedgerPro_Capstone1 {
     }
 
 
-    private static void addDeposit(Scanner scanner, ArrayList<Transaction> transactions) {
+    private static void addDeposit(Scanner scanner, ArrayList<Transaction> transactions) throws IOException {
+
+
+
         System.out.println("date of the deposit (YYYY-MM-DD):");
         String date = scanner.nextLine();
 
@@ -167,6 +177,14 @@ public class LedgerPro_Capstone1 {
         Transaction transaction = new Transaction(date, time, description, vendor, Double.parseDouble(amount));
         transactions.add(transaction);
         System.out.println("Deposit added successfully.");
+
+        try {
+            writer = new FileWriter("./src/main/java/com/pn/transactions.txt", true);
+            reader = new FileReader("./src/main/java/com/pn/transactions.txt");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private static void makePayment(Scanner scanner, ArrayList<Transaction> transactions) {

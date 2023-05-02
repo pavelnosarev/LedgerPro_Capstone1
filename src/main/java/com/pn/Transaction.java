@@ -1,4 +1,4 @@
-package org.example;
+package com.pn;
 
 public class Transaction {
     private String date;
