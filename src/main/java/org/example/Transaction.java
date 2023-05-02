@@ -7,6 +7,7 @@ public class Transaction {
     private String vendor;
     private double amount;
 
+
     public Transaction(String date, String time, String description,
                        String vendor, double amount)
     {
@@ -36,5 +37,7 @@ public class Transaction {
     public double getAmount() {
         return amount;
     }
+
+
 }
 

@@ -123,7 +123,8 @@ public class LedgerPro_Capstone1 {
         System.out.println("Enter the amount of the payment:");
         String amount = scanner.nextLine();
 
-        Transaction transaction = new Transaction(date, time, description, vendor, -Double.parseDouble(amount));
+        Transaction transaction = new Transaction(
+                date, time, description, vendor, -Double.parseDouble(amount));
         transactions.add(transaction);
         System.out.println("Payment made successfully.");
     }
@@ -152,18 +153,19 @@ public class LedgerPro_Capstone1 {
         System.out.println("");
     }
 
-    private static void monthToDateReport(ArrayList<Transaction> transactions) {
-        System.out.println("Please enter the start date of the report (YYYY-MM-DD):");
-        Scanner scanner = new scanner{};
-        String startDate = scanner.nextLine();
-        System.out.println("Please enter the end date of the report (YYYY-MM-DD):");
-        String endDate = scanner.nextLine();
+//    private static void monthToDateReport(ArrayList<Transaction> transactions) {
+//        System.out.println("Please enter the start date of the report (YYYY-MM-DD):");
+//        Scanner scanner = new scanner{};
+//        String startDate = scanner.nextLine();
+//        System.out.println("Please enter the end date of the report (YYYY-MM-DD):");
+//        String endDate = scanner.nextLine();
 
-        List<Transaction> monthToDateTransactions = getTransactionsBetweenDates(transactions, startDate, endDate);
-        for (Transaction transaction : monthToDateTransactions) {
-            System.out.println(transaction);
-        }
-    }
+//        List<Transaction> monthToDateTransactions =
+//                getTransactionsBetweenDates(transactions, startDate, endDate);
+//        for (Transaction transaction : monthToDateTransactions) {
+//            System.out.println(transaction);
+//        }
+//    }
 
 
 }
