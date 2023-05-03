@@ -10,13 +10,10 @@ import java.io.*;
 import java.time.*;
 //import static com.pn.Transaction;
 
-import static com.pn.Transaction.date;
-import static com.pn.Transaction.time;
-
 //import static com.sun.beans.introspect.PropertyInfo.Name.description;
 //import static com.sun.imageio.plugins.jpeg.JPEG.vendor;
-import static java.time.LocalDate.now;
 import static com.pn.Transaction.*;
+import static java.time.LocalDate.now;
 //import static
 
 
@@ -27,18 +24,12 @@ public class LedgerPro_Capstone1 {
     static Scanner scanner = new Scanner(System.in);
     static LocalDate today = now();
     static FileWriter writer;
+
     static BufferedReader reader;
     static boolean append;
 
     static {
-        try {
-            writer = new FileWriter("./src/main/java/com/pn/transaction.txt", true);
 
-            writer.write("\nDeposit: " + date + "| " +  time + "| " + description + "| " + vendor + "| " + amount + "|");
-            writer.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 //        static writer = new FileWriter("./src/main/java/com/pn/transactions.txt\n", true);
     public static void main(String[] args) throws IOException {
@@ -183,12 +174,19 @@ public class LedgerPro_Capstone1 {
         String vendor = scanner.nextLine();
 
         System.out.println("Enter the amount of the deposit:");
-        String amount = scanner.nextLine();
+        double amount = Double.parseDouble(scanner.nextLine());
 
-        Transaction transaction = new Transaction(date, time, description, vendor, Double.parseDouble(amount));
+        Transaction transaction = new Transaction(date, time, description, vendor, Double.parseDouble(String.valueOf(amount)));
         transactions.add(transaction);
         System.out.println("Deposit added successfully.");
+        try {
+            writer = new FileWriter("./src/main/java/com/pn/transaction.txt", true);
 
+            writer.write("\nDeposit: " + date + "| " +  time + "| " + description + "| " + vendor + "| " + amount + "|");
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 //        try {
 //            writer = new FileWriter("./src/main/java/com/pn/transactions.txt", true);
 //            reader = new FileReader("./src/main/java/com/pn/transactions.txt");
@@ -199,7 +197,7 @@ public class LedgerPro_Capstone1 {
     }
 
     private static void makePayment(Scanner scanner, ArrayList<Transaction> transactions) {
-        System.out.println("Enter the date of the payment (YYYY-MM-DD):");
+        System.out.println("Enter the date of the payment (DD-MM-YYYY):");
         String date = scanner.nextLine();
 
         System.out.println("Enter the time of the payment (HH:MM:SS):");
@@ -218,6 +216,15 @@ public class LedgerPro_Capstone1 {
                 date, time, description, vendor, -Double.parseDouble(amount));
         transactions.add(transaction);
         System.out.println("Payment made successfully.");
+
+        try {
+            writer = new FileWriter("./src/main/java/com/pn/transaction.txt", true);
+
+            writer.write("\nPayment: " + date + " | " +  time + " | " + description + " | " + vendor + " | " + amount + " |");
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static void viewLedger(ArrayList<Transaction> transactions) {
