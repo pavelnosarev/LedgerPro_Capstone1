@@ -1,11 +1,13 @@
 package com.pn;
 
 public class Transaction {
-    private String date;
-    private String time;
-    private String description;
-    private String vendor;
-    private double amount;
+    public static String date;
+    public static String time;
+    public static double amount;
+    public static String description;
+//    public String description;
+    public static String vendor;
+//    public double amount;
 
 
     public Transaction(String date, String time, String description,
