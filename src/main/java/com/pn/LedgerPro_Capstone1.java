@@ -8,36 +8,22 @@ package com.pn;
 import java.util.*;
 import java.io.*;
 import java.time.*;
-//import static com.pn.Transaction;
 
-//import static com.sun.beans.introspect.PropertyInfo.Name.description;
-//import static com.sun.imageio.plugins.jpeg.JPEG.vendor;
-import static com.pn.Transaction.*;
 import static java.time.LocalDate.now;
-//import static
+
 
 
 public class LedgerPro_Capstone1 {
 
     static ArrayList<Transaction> transactions = new ArrayList<>();
-    static String TRANSACTIONS_FILE = "transactions.txt";
     static Scanner scanner = new Scanner(System.in);
-    static LocalDate today = now();
+//    static LocalDate today = now();
     static FileWriter writer;
 
-    static BufferedReader reader;
-    static boolean append;
+//    static BufferedReader reader;
+//    static boolean append;
 
-    static {
-
-    }
-//        static writer = new FileWriter("./src/main/java/com/pn/transactions.txt\n", true);
     public static void main(String[] args) throws IOException {
-//
-//        boolean append;
-//        writer = new FileWriter("./src/main/java/com/pn/transactions.txt\n", true);
-//        reader = new FileReader("./src/main/java/com/pn/transactions.txt\n");
-
         while (true) {
             System.out.println("What do you want?");
             System.out.println("\tD add deposit");
@@ -136,9 +122,10 @@ public class LedgerPro_Capstone1 {
     public static List<Transaction> getTransactionsBetweenDates(
             List<Transaction> transactions, LocalDate startDate, LocalDate endDate) {
         List<Transaction> filteredTransactions = new ArrayList<>();
+
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = LocalDate.parse(transaction.getDate());
-            if (transactionDate.compareTo(startDate) >= 0 && transactionDate.compareTo(endDate) <= 0) {
+            if (!transactionDate.isBefore(startDate) && !transactionDate.isAfter(endDate)) {
                 filteredTransactions.add(transaction);
             }
         }
@@ -148,6 +135,7 @@ public class LedgerPro_Capstone1 {
     public static List<Transaction> getTransactionsByVendor(
             List<Transaction> transactions, String vendorName) {
         List<Transaction> filteredTransactions = new ArrayList<>();
+
         for (Transaction transaction : transactions) {
             if (transaction.getVendor().equals(vendorName)) {
                 filteredTransactions.add(transaction);
@@ -157,7 +145,9 @@ public class LedgerPro_Capstone1 {
     }
 
 
-    private static void addDeposit(Scanner scanner, ArrayList<Transaction> transactions) throws IOException {
+    private static void addDeposit(
+            Scanner scanner, ArrayList<Transaction> transactions)
+            throws IOException {
 
 
 
@@ -187,14 +177,8 @@ public class LedgerPro_Capstone1 {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-//        try {
-//            writer = new FileWriter("./src/main/java/com/pn/transactions.txt", true);
-//            reader = new FileReader("./src/main/java/com/pn/transactions.txt");
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-
     }
+
 
     private static void makePayment(Scanner scanner, ArrayList<Transaction> transactions) {
         System.out.println("Enter the date of the payment (DD-MM-YYYY):");
@@ -235,7 +219,7 @@ public class LedgerPro_Capstone1 {
                 transaction.getTime(), transaction.getDescription(),
                 transaction.getVendor(), transaction.getAmount()));
 
-        System.out.println("");
+        System.out.println();
 
         System.out.println("Deposits:");
         System.out.println("Date | Time | Description | Vendor | Amount");
@@ -248,9 +232,43 @@ public class LedgerPro_Capstone1 {
             }
         });
 
-        System.out.println("");
+        System.out.println();
     }
 
 
 
 }
+
+
+// converting from string to a date
+
+//        String date1= "2000-12-01"; // yyyy-mm-dd
+
+
+//create a pattern
+//DateTime Formatter dateTimeFormatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd"); make sure to import datetimeformatter
+
+// parse/covert the date using the created pattern
+// LocalDate formattedDate1 = LocalDate.parse(date1, dateTimeFormatter1);
+//print
+//System.out.println(formattedDate1.getYear());
+
+
+
+
+
+
+
+//    String date2 = "12-01-00"; //mm-dd-yy
+//        String date3 = "01-12-00"; // dd=mm-yy
+
+
+
+
+// from beginning of year
+
+//if value is in given date range
+
+
+
+// converting from a date to a string
