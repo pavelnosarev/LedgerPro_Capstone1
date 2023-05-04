@@ -8,8 +8,11 @@ package com.pn;
 import java.util.*;
 import java.io.*;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 
 import static java.time.LocalDate.now;
+
+//import static java.time.LocalDate.now;
 
 
 
@@ -24,6 +27,7 @@ public class LedgerPro_Capstone1 {
 //    static boolean append;
 
     public static void main(String[] args) throws IOException {
+        loadTransactions();
         while (true) {
             System.out.println("What do you want?");
             System.out.println("\tD add deposit");
@@ -59,7 +63,7 @@ public class LedgerPro_Capstone1 {
 
         System.out.println("Which report do you need?");
         System.out.println("\t1 for month to date");
-        System.out.println("\t2 for previous month month");
+        System.out.println("\t2 for previous month");
         System.out.println("\t3 for year to date");
         System.out.println("\t4 previous year");
         System.out.println("\t5 search by vendor");
@@ -68,15 +72,15 @@ public class LedgerPro_Capstone1 {
         int choice = scanner.nextInt();
 
         switch (choice) {
-            case 1:
+            case 1 -> {
                 List<Transaction> monthToDateTransactions =
                         getTransactionsBetweenDates(transactions,
                                 now().minusMonths(1), now());
                 for (Transaction transaction : monthToDateTransactions) {
                     System.out.println(transaction);
                 }
-                break;
-            case 2:
+            }
+            case 2 -> {
                 List<Transaction> previousMonthTransactions =
                         getTransactionsBetweenDates(transactions,
                                 now().minusMonths(2),
@@ -84,16 +88,16 @@ public class LedgerPro_Capstone1 {
                 for (Transaction transaction : previousMonthTransactions) {
                     System.out.println(transaction);
                 }
-                break;
-            case 3:
+            }
+            case 3 -> {
                 List<Transaction> yearToDateTransactions =
                         getTransactionsBetweenDates(transactions,
                                 now().minusYears(1), now());
                 for (Transaction transaction : yearToDateTransactions) {
                     System.out.println(transaction);
                 }
-                break;
-            case 4:
+            }
+            case 4 -> {
                 List<Transaction> previousYearTransactions =
                         getTransactionsBetweenDates(transactions,
                                 now().minusYears(2),
@@ -101,8 +105,8 @@ public class LedgerPro_Capstone1 {
                 for (Transaction transaction : previousYearTransactions) {
                     System.out.println(transaction);
                 }
-                break;
-            case 5:
+            }
+            case 5 -> {
                 System.out.println("Enter the name of the vendor:");
                 String vendorName = scanner.nextLine();
                 List<Transaction> vendorTransactions =
@@ -110,12 +114,11 @@ public class LedgerPro_Capstone1 {
                 for (Transaction transaction : vendorTransactions) {
                     System.out.println(transaction);
                 }
-                break;
-            case 6:
+            }
+            case 6 -> {
                 return;
-            default:
-                System.out.println("Nope, that is not an option.");
-                break;
+            }
+            default -> System.out.println("Nope, that is not an option.");
         }
     }
 
@@ -172,7 +175,7 @@ public class LedgerPro_Capstone1 {
         try {
             writer = new FileWriter("./src/main/java/com/pn/transaction.txt", true);
 
-            writer.write("\nDeposit: " + date + "| " +  time + "| " + description + "| " + vendor + "| " + amount + "|");
+            writer.write( date + "| " +  time + "| " + description + "| " + vendor + "| " + amount + "\n");
             writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -234,6 +237,18 @@ public class LedgerPro_Capstone1 {
 
         System.out.println();
     }
+     public static void loadTransactions(){
+
+
+        // read from file ONCE
+        //iterate through each line  + split in ()while loop
+         //create a new transaction + load in arrayList
+         //load inside transaction + add to ArrayList
+
+
+
+
+     }
 
 
 
@@ -271,4 +286,49 @@ public class LedgerPro_Capstone1 {
 
 
 
-// converting from a date to a string
+
+
+//        String date = "2023-04-15";
+//        String time = "10:13:25";
+//        String dateTime = date + " " + time; // "2023-04-15 10:13:25"
+//        // 1: Create a pattern for the date
+//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//
+////        2: Parse/convert the date using the created pattern
+//        LocalDateTime localDateTime = LocalDateTime.parse(dateTime, dateTimeFormatter);
+//
+//        System.out.println(localDateTime);/
+//
+//
+//        / converting from a date to a string
+
+// .compare
+
+//        String date = "2023-05-03";
+//        String time = "10:13:25";
+//        String dateTime = date + " " + time; // "2023-04-15 10:13:25"
+//        // 1: Create a pattern for the date
+//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//
+////        2: Parse/convert the date using the created pattern
+//        LocalDateTime localDateTime = LocalDateTime.parse(dateTime, dateTimeFormatter);
+
+// LocalDateTime now = LocalDateTime.now();
+// int comparison = transactionlDateTime.compareTo(now);
+// if (comparison > 0) {
+//          System.out.println("comes after");
+
+//} else {'
+// System.out.println("comes before");
+//
+
+//
+//        System.out.println(now.compareTo(LocalDateTime));
+
+
+
+///// MONTHTODATE
+//   Month currentMonth = LocalDateTime.now().getMonth();
+
+// LocalDateTime currentDateTIme = transactionDateTime.getMonth();
+//System.out.println(transactionMonth.compareTo(currentMonth));
