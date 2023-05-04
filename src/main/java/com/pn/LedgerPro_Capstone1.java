@@ -1,31 +1,19 @@
 package com.pn;
 
-//import java.io.FileReader;
-//import java.io.FileWriter;
-//import java.io.IOException;
-//import java.time.LocalDate;
-//import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.io.*;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 
 import static java.time.LocalDate.now;
-
-//import static java.time.LocalDate.now;
-
 
 
 public class LedgerPro_Capstone1 {
 
     static ArrayList<Transaction> transactions = new ArrayList<>();
     static Scanner scanner = new Scanner(System.in);
-//    static LocalDate today = now();
     static FileWriter writer;
-
-//    static BufferedReader reader;
-//    static boolean append;
-
+    static LocalDate today = LocalDate.now();
     public static void main(String[] args) throws IOException {
         loadTransactions();
         while (true) {
@@ -72,69 +60,68 @@ public class LedgerPro_Capstone1 {
         int choice = scanner.nextInt();
 
         switch (choice) {
-            case 1 -> {
-                List<Transaction> monthToDateTransactions =
-                        getTransactionsBetweenDates(transactions,
-                                now().minusMonths(1), now());
+            case 1:
+                List<Transaction> monthToDateTransactions = getTransactionsBetweenDates(transactions,
+                        LocalDate.now().withDayOfMonth(1), LocalDate.now());
                 for (Transaction transaction : monthToDateTransactions) {
                     System.out.println(transaction);
                 }
-            }
-            case 2 -> {
-                List<Transaction> previousMonthTransactions =
-                        getTransactionsBetweenDates(transactions,
-                                now().minusMonths(2),
-                                now().minusMonths(1));
+                break;
+            case 2:
+                List<Transaction> previousMonthTransactions = getTransactionsBetweenDates(transactions,
+                        LocalDate.now().minusMonths(1).withDayOfMonth(1),
+                        LocalDate.now().minusMonths(1).withDayOfMonth(LocalDate.now().minusMonths(1).lengthOfMonth()));
                 for (Transaction transaction : previousMonthTransactions) {
                     System.out.println(transaction);
                 }
-            }
-            case 3 -> {
-                List<Transaction> yearToDateTransactions =
-                        getTransactionsBetweenDates(transactions,
-                                now().minusYears(1), now());
+                break;
+            case 3:
+                List<Transaction> yearToDateTransactions = getTransactionsBetweenDates(transactions,
+                        LocalDate.now().withDayOfYear(1), LocalDate.now());
                 for (Transaction transaction : yearToDateTransactions) {
                     System.out.println(transaction);
                 }
-            }
-            case 4 -> {
-                List<Transaction> previousYearTransactions =
-                        getTransactionsBetweenDates(transactions,
-                                now().minusYears(2),
-                                now().minusYears(1));
+                break;
+            case 4:
+                List<Transaction> previousYearTransactions = getTransactionsBetweenDates(transactions,
+                        LocalDate.now().minusYears(1).withDayOfYear(1),
+                        LocalDate.now().minusYears(1).withDayOfYear(LocalDate.now().minusYears(1).lengthOfYear()));
                 for (Transaction transaction : previousYearTransactions) {
                     System.out.println(transaction);
                 }
-            }
-            case 5 -> {
+                break;
+            case 5:
                 System.out.println("Enter the name of the vendor:");
                 String vendorName = scanner.nextLine();
-                List<Transaction> vendorTransactions =
-                        getTransactionsByVendor(transactions, vendorName);
+                List<Transaction> vendorTransactions = getTransactionsByVendor(transactions, vendorName);
                 for (Transaction transaction : vendorTransactions) {
                     System.out.println(transaction);
                 }
-            }
-            case 6 -> {
+                break;
+            case 6:
                 return;
-            }
-            default -> System.out.println("Nope, that is not an option.");
+            default:
+                System.out.println("Nope, that is not an option.");
+                break;
         }
     }
 
     public static List<Transaction> getTransactionsBetweenDates(
-            List<Transaction> transactions, LocalDate startDate, LocalDate endDate) {
+            List<Transaction> transactions, String startDateStr, String endDateStr) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate startDate = LocalDate.parse(startDateStr, formatter);
+        LocalDate endDate = LocalDate.parse(endDateStr, formatter);
+
         List<Transaction> filteredTransactions = new ArrayList<>();
 
         for (Transaction transaction : transactions) {
-            LocalDate transactionDate = LocalDate.parse(transaction.getDate());
+            LocalDate transactionDate = LocalDate.parse(transaction.getDate(), formatter);
             if (!transactionDate.isBefore(startDate) && !transactionDate.isAfter(endDate)) {
                 filteredTransactions.add(transaction);
             }
         }
         return filteredTransactions;
     }
-
     public static List<Transaction> getTransactionsByVendor(
             List<Transaction> transactions, String vendorName) {
         List<Transaction> filteredTransactions = new ArrayList<>();
@@ -226,34 +213,49 @@ public class LedgerPro_Capstone1 {
 
         System.out.println("Deposits:");
         System.out.println("Date | Time | Description | Vendor | Amount");
-        transactions.forEach(transaction -> {
+        boolean hasDeposits = false;
+        for (Transaction transaction : transactions) {
             if (transaction.getAmount() > 0) {
                 System.out.printf("%s | %s | %s | %s | %.2f\n",
                         transaction.getDate(), transaction.getTime(),
                         transaction.getDescription(), transaction.getVendor(),
                         transaction.getAmount());
+                hasDeposits = true;
             }
-        });
+        }
+        if (!hasDeposits) {
+            System.out.println("No deposits found.");
+        }
 
         System.out.println();
     }
-     public static void loadTransactions(){
+    public static void loadTransactions() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader("./src/main/java/com/pn/transaction.txt"));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] transactionData = line.split("\\|");
+            Transaction transaction = new Transaction(
+                    transactionData[0], transactionData[1], transactionData[2], transactionData[3], Double.parseDouble(transactionData[4]));
+            transactions.add(transaction);
 
-
-        // read from file ONCE
-        //iterate through each line  + split in ()while loop
-         //create a new transaction + load in arrayList
-         //load inside transaction + add to ArrayList
-
-
-
-
-     }
-
-
+        }
+        reader.close();
+    }
 
 }
 
+
+
+
+
+
+
+
+
+// read from file ONCE
+//iterate through each line  + split in ()while loop
+//create a new transaction + load in arrayList
+//load inside transaction + add to ArrayList
 
 // converting from string to a date
 
