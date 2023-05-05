@@ -1,1 +1,23 @@
-10-10-1990|fsadfasd|asdfasdf|sdfa|100.0
+2023-04-30 | 10:30 AM | Groceries | Whole Foods Market | -$125.36
+2023-04-29 | 2:15 PM | Gasoline | Exxon Mobil | -$48.52
+2023-04-28 | 6:45 PM | Dinner with friends | The Cheesecake Factory | -$87.92
+2023-04-27 | 8:20 AM | Utilities | PG&E | -$89.73
+2023-04-25 | 12:00 PM | Salary | XYZ Company | $3500.00
+2023-04-23 | 3:30 PM | Car payment | Toyota Financial Services | -$375.00
+2023-04-21 | 11:00 AM | Internet and phone bill | AT&T | -$172.87
+2023-04-19 | 7:45 PM | Movie tickets | AMC Theatres | -$37.50
+2023-04-17 | 1:10 PM | Shopping | Nordstrom | -$215.00
+2023-04-16 | 4:30 PM | Haircut | Supercuts | -$35.00
+2023-04-15 | 9:00 AM | Health insurance premium | Blue Shield | -$250.00
+2023-04-14 | 12:15 PM | Lunch meeting | Panera Bread | -$35.67
+2023-04-13 | 3:45 PM | Home improvement supplies | Home Depot | -$78.21
+2023-04-12 | 6:20 PM | Dinner date | Ruth's Chris Steak House | -$125.00
+2023-04-11 | 10:00 AM | Client payment | ABC Corp | $5000.00
+2023-04-09 | 2:30 PM | Gym membership fee | 24 Hour Fitness | -$50.00
+2023-04-07 | 5:15 PM | Clothes shopping | Macy's | -$189.98
+2023-04-05 | 11:30 AM | Business supplies | Staples | -$42.99
+2023-04-04 | 1:00 PM | Concert tickets | Ticketmaster | -$175.00
+2023-04-02 | 9:45 AM | Rent | XYZ Apartments | -$1800.00
+
+
+

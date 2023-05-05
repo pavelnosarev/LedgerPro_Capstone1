@@ -174,7 +174,7 @@ public class LedgerPro_Capstone1 {
 
 
     private static void makePayment(Scanner scanner, ArrayList<Transaction> transactions) {
-        System.out.println("Enter the date of the payment (DD-MM-YYYY):");
+        System.out.println("Enter the date of the payment (YYYY-MM-DD):");
         String date = scanner.nextLine();
 
         System.out.println("Enter the time of the payment (HH:MM:SS):");
