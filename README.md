@@ -29,81 +29,103 @@ previousYear, searchByVendor, backToMainMenu]
 [reportPage] and [homePage]
 
 # pseudocode
-
-* import java.io.File;
-* import java.io.FileWriter;
-* import java.util.Scanner;
-* import java.io.FileNotFoundException;
-* import java.IOException;
-* import java.util.ArrayList;
-
-*public class LedgerPro 
-
-    private static final String TRANSACTION_FILE ="transactions.csv"; 
-[to read the csv file] 
-
-  * create a main class inside our LedgerPro  : 
-
-    public static void main(String[] args) throws FileNotFoundException { } 
-  
-  * create Scanner scanner = new Scanner (System.in); [takes in user input];
-    * need an ArrayList to store the items :
-        ArrayList<Transaction>transactions = new ArrayList <>() ;
-  * need to use a do {} while loop to show the menu for my users 
-  ### SOUT is shortcut for System.out.println()
-maybe do a while(true)]?
+Start by importing the required packages and libraries.
     
-    public static void main(String[] args) throws FileNotFoundException {
-        Scanner scanner = new Scanner(System.in);
-        ArrayList<Transaction> transactions = new ArrayList<>();
+    import java.util.*;
+    import java.io.*;
+    import java.time.*;
 
-#### menu
-    
-    public static void main(String[] args) throws FileNotFoundException {
-        Scanner scanner = new Scanner(System.in);
-        ArrayList<Transaction> transactions = new ArrayList<>();
+*public class LedgerPro
+
+*Declare a static ArrayList of Transaction objects named transactions. 
+This will hold all the transactions made by the user.
+*Declare a static Scanner object named scanner. 
+This will be used to get input from the user input.
+*Declare a static FileWriter object named writer. 
+This will be used to write transactions to my transaction.txt.
+*Declare a static LocalDate object named today and initialize it to the current date. 
+This will be used to get the current date for transactions.
 
 
-    while (true){  
-            System.out.println("here are our options: ");
-            System.out.println("\tD add deposit");
-            System.out.println("\tP make payment");
-            System.out.println("\tL view ledger");
-            System.out.println("\tR reports menu");
-            System.out.println("\tQ quit app");
+    static ArrayList<Transaction> transactions = new ArrayList<>();
+    static Scanner scanner = new Scanner(System.in);
+    static FileWriter writer;
+    static LocalDate today = LocalDate.now();
 
-        String input = scanner.nextLine(); // variable for user input through scanner 
 
-  * switch statement to allow different paths depending on user input
 
-### switch
-  
-  *        switch (input) {
+## main
+*Define a main method that throws an IOException.
+*Inside the main method, call the loadTransactions method to load 
+any previously saved transactions from a file into the transactions ArrayList.
+
+      public static void main(String[] args) throws IOException {
+        loadTransactions();
+
+*Use a while loop to display a menu of options to the user and handle the user's choice with a switch statement:
+a. If the user chooses "D", call the addDeposit method.
+b. If the user chooses "P", call the makePayment method.
+c. If the user chooses "L", call the viewLedger method.
+d. If the user chooses "R", call the reportsMenu method.
+e. If the user chooses "Q", print a message indicating that the app
+is quitting and return from the main method.
+f. If the user chooses any other option, display an error message 
+and continue the loop.
+
+    System.out.println("What do you want?");
+    System.out.println("\tD add deposit");
+    System.out.println("\tP make payment");
+    System.out.println("\tL view ledger");
+    System.out.println("\tR reports menu");
+    System.out.println("\tQ quit app");
+
+            String choice = scanner.nextLine();
+
+            switch (choice.toUpperCase()) {
                 case "D":
                     addDeposit(scanner, transactions);
                     break;
                 case "P":
-                    payment(scanner,transactions);
+                    makePayment(scanner, transactions);
                     break;
                 case "L":
                     viewLedger(transactions);
                     break;
+                case "R":
+                    reportsMenu(scanner, transactions);
+                    break;
                 case "Q":
-                    sout("quitting application");
+                    System.out.println("quitting app, bye bye");
                     return;
                 default:
-                     System.out.println("nope that's not an option try again");
+                    System.out.println("Invalid choice. Please try again.");
 
-                }
-            }
+### loadTransactions 
+Define a loadTransactions method that reads transactions from a file
+and adds them to the transactions ArrayList. 
+
+    public static void loadTransactions() throws IOException {
+    BufferedReader reader = new BufferedReader(new FileReader("./src/main/java/com/pn/transaction.txt"));
+    String line;
+    while ((line = reader.readLine()) != null) {
+    String[] transactionData = line.split("\\|");
+    Transaction transaction = new Transaction(
+    transactionData[0], transactionData[1], transactionData[2], transactionData[3], Double.parseDouble(transactionData[4]));
+    transactions.add(transaction);
+
         }
-  * need methods for addDeposit, payment, viewLedger, 
-    * and saving transactions to my 'transactions.csv'
+        reader.close();
 
-[addDeposit]
 
-     private static void addDeposit(Scanner scanner, ArrayList<Transaction> transactions) {
-        System.out.println("Enter the date of the deposit (YYYY-MM-DD):");
+### addDeposit
+Define an addDeposit method that prompts the user for information
+about a new deposit, creates a new Transaction object, adds it to the 
+transactions ArrayList, and saves it to a file. This will allow the user 
+to add money to their account.
+
+
+    private static void addDeposit(Scanner scanner, ArrayList<Transaction> transactions) {
+        System.out.println("Enter the date of the deposit (DD-MM-YYYY):");
         String date = scanner.nextLine();
 
         System.out.println("Enter the time of the deposit (HH:MM:SS):");
@@ -115,17 +137,39 @@ maybe do a while(true)]?
         System.out.println("Enter the vendor of the deposit:");
         String vendor = scanner.nextLine();
 
-        System.out.println("Enter the amount of the deposit:");
-        String amount = scanner.nextLine();
-
-        Transaction transaction = new Transaction(date, time, description, vendor, Double.parseDouble(amount));
+        double amount = 0.0;
+        boolean validAmount = false;
+        while (!validAmount) {
+            System.out.println("Enter the amount of the deposit:");
+            String amountStr = scanner.nextLine();
+            try {
+                amount = Double.parseDouble(amountStr);
+                validAmount = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid amount. Please enter a valid number.");
+            }
+        }
+        Transaction transaction = new Transaction(date, time, description, vendor, amount);
         transactions.add(transaction);
         System.out.println("Deposit added successfully.");
+        try {
+            writer = new FileWriter("./src/main/java/com/pn/transaction.txt", true);
+            writer.write(transaction.toString() + "\n");
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
-[payment]
 
-    private static void payment(Scanner scanner, ArrayList<Transaction> transactions) {
-        System.out.println("Enter the date of the payment (YYYY-MM-DD):");
+
+### makePayment
+Define a makePayment method that prompts the user for information
+about a new payment, creates a new Transaction object with a negative 
+amount, adds it to the transactions ArrayList, and saves it to a file. 
+This will allow the user to make a payment.
+
+    private static void makePayment(Scanner scanner, ArrayList<Transaction> transactions) {
+        System.out.println("Enter the date of the payment (DD-MM-YYYY):");
         String date = scanner.nextLine();
 
         System.out.println("Enter the time of the payment (HH:MM:SS):");
@@ -137,245 +181,160 @@ maybe do a while(true)]?
         System.out.println("Enter the vendor of the payment:");
         String vendor = scanner.nextLine();
 
-        System.out.println("Enter the amount of the payment:");
-        String amount = scanner.nextLine();
-
-        Transaction transaction = new Transaction(date, time, description, vendor, 
-        -Double.parseDouble(amount)); [subtract from the double(args is amount)]
+        double amount = 0.0;
+        boolean validAmount = false;
+        while (!validAmount) {
+            System.out.println("Enter the amount of the payment:");
+            String amountStr = scanner.nextLine();
+            try {
+                amount = Double.parseDouble(amountStr);
+                validAmount = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid amount. Please enter a valid number.");
+            }
+        }
+        Transaction transaction = new Transaction(date, time, description, vendor, -amount);
         transactions.add(transaction);
         System.out.println("Payment made successfully.");
+        try {
+            writer = new FileWriter("./src/main/java/com/pn/transaction.txt", true);
+
+            writer.write("\nPayment: " + date + " | " + time + " | " + description + " | " + vendor + " | " + amount + " |");
+            writer.write(transaction.toString() + "\n");
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-[viewLedger]
+
+
+
+### viewLedger
+Define a viewLedger method that displays all transactions in the
+transactions ArrayList. This will allow the user to see all the transactions
+they have made.
 
     private static void viewLedger(ArrayList<Transaction> transactions) {
-        System.out.println("All transactions:");
+    System.out.println("All transactions:");
+    System.out.println("Date | Time | Description | Vendor | Amount");
+    transactions.forEach(transaction -> System.out.printf(
+    "%s | %s | %s | %s | %.2f\n", transaction.getDate(),
+    transaction.getTime(), transaction.getDescription(),
+    transaction.getVendor(), transaction.getAmount()));
+
+        System.out.println();
+
+        System.out.println("Deposits:");
         System.out.println("Date | Time | Description | Vendor | Amount");
+        boolean hasDeposits = false;
         for (Transaction transaction : transactions) {
-            System.out.printf("%s | %s | %s | %s | %.2f\n", transaction.getDate(), 
-            transaction.getTime(), transaction.getDescription(), 
-            transaction.getVendor(), transaction.getAmount());
+            if (transaction.getAmount() > 0) {
+                System.out.printf("%s | %s | %s | %s | %.2f\n",
+                        transaction.getDate(), transaction.getTime(),
+                        transaction.getDescription(), transaction.getVendor(),
+                        transaction.getAmount());
+                hasDeposits = true;
+            }
+        }
+        if (!hasDeposits) {
+            System.out.println("No deposits found.");
         }
 
-        System.out.println("");
+        System.out.println();
     }
 
+### reportsMenu
+Define a reportsMenu method that displays a menu of reporting options 
+to the user and handles the user's choice with a switch statement:
 
 
 
-[passing through our method ]
-      [passes user input into our arraylist of Transaction objects]
-      sout ("enter date for deposit (yyyy-mm-dd):  ");
-      String date = scanner.nextLine();
-[do the same for time(hh:mm:ss), description, vendor, amount]
-[also need a .add]? need to lookup how to? or ask greg?
+    private static void reportsMenu(Scanner scanner, ArrayList<Transaction> transactions) {
 
-    transaction.add(new Transaction(date, time,description, 
-        vendor, amount));
-    sout ("deposit added");
-    
+        System.out.println("Which report do you need?");
+        System.out.println("\t1 month to date");
+        System.out.println("\t2 previous month");
+        System.out.println("\t3 year to date");
+        System.out.println("\t4 previous year");
+        System.out.println("\t5 vendor");
+        System.out.println("\t6 for main menu");
+
+        int choice = Integer.parseInt(scanner.nextLine());
 
 
-    }
-    private static void payment(Scanner scanner, ArrayList<
-    Transaction> transactions){ 
 
-[same as the above method, must add println and String scanner 
-for date, time, description, vendor, amount, and a way to add the
-payment with .add? and a payment made message]
+       
+### 1
+a. If the user chooses "1", display all transactions from the beginning
+of the current month to the current date.
 
-    private static void viewLedger (ArrayList<Transaction>
-    transactions){}
+    switch (choice) {
+            case 1:
+                List<Transaction> monthToDateTransactions = getTransactionsBetweenDates(transactions,
+                        LocalDate.now().withDayOfMonth(1), LocalDate.now());
+                for (Transaction transaction : monthToDateTransactions) {
+                    System.out.println(transaction);
+                }
+                break;
+### 2
+b. If the user chooses "2", display all transactions from the beginning
+of the previous month to the end of the previous month.
 
-[only need to pass through the arraylist for viewing the list of objects]
-    
-    sout("Transactions :");
-    sout("Date | Time | Description | Vendor | Amount");
+            case 2:
+                List<Transaction> previousMonthTransactions = getTransactionsBetweenDates(transactions,
+                        LocalDate.now().minusMonths(1).withDayOfMonth(1),
+                        LocalDate.now().minusMonths(1).withDayOfMonth(LocalDate.now().minusMonths(1).lengthOfMonth()));
+                for (Transaction transaction : previousMonthTransactions) {
+                    System.out.println(transaction);
+                }
+                break;
+### 3
+c. If the user chooses "3", display all transactions from the beginning
+of the current year to the current date.
 
-[need to iterate through users transactions, will use a : lambda 
-and a for loop, using the : allows for me to pass the argument]
 
-[ie (args for function - Transaction transaction : transactions)
-{curly braces will hold my params for the args I placed - 
-- use printf here to force specific print style and format}]
-  
-        for( Transaction transaction : transactions) {
-          souf
-      ("%s | %s | %s  | %s | %.2f\n",
-         transaction.getDate(), transaction.getTime(), transaction.getDescription(),
-         transaction.getVendor(), transaction.getAmount())
-         }
-        sout("");
-        
-[need to also add deposits ] maybe can combine these?
+            case 3:
+                List<Transaction> yearToDateTransactions = getTransactionsBetweenDates(transactions,
+                        LocalDate.now().withDayOfYear(1), LocalDate.now());
+                for (Transaction transaction : yearToDateTransactions) {
+                    System.out.println(transaction);
+                }
+                break;
+### 4
+d. If the user chooses "4", display all transactions from the beginning
+of the previous year to the end of the previous year.
 
-        sout("deposits: ");
-        sout("Date | Time | Description | Vendor | Amount");
+            case 4:
+                List<Transaction> previousYearTransactions = getTransactionsBetweenDates(transactions,
+                        LocalDate.now().minusYears(1).withDayOfYear(1),
+                        LocalDate.now().minusYears(1).withDayOfYear(LocalDate.now().minusYears(1).lengthOfYear()));
+                for (Transaction transaction : previousYearTransactions) {
+                    System.out.println(transaction);
+                }
+                break;
+### 5
+e. If the user chooses "5", prompt the user for a vendor name and display
+all transactions with that vendor.
 
-        for (Transaction transaction : transactions) {
+            case 5:
+                System.out.println("Enter the name of the vendor:");
+                String vendorName = scanner.nextLine();
+                List<Transaction> vendorTransactions = getTransactionsByVendor(transactions, vendorName);
+                for (Transaction transaction : vendorTransactions) {
+                    System.out.println(transaction);
+                }
+                break;
+### 6
+f. If the user chooses "6", return from the method
 
-        if(transaction.getAmount() > 0) { "%s | %s | %s  | %s | %.2f\n",
-         transaction.getDate(), transaction.getTime(), transaction.getDescription(),
-         transaction.getVendor(), transaction.getAmount())
-
+            case 6:
+                return;
+            default:
+                System.out.println("Nope, that is not an option.");
+                break;
         }
-        sout("");
-
-[need ability to view reports ]
-
-### submenu for reports
-
-    private static void reportMenu (Scanner scanner , ArrayList<Transaction>
-    transactions) {
-    sout ("Which report do you need?");
-    sout("\t1 for month to date");
-    sout ("\t2 for previous month month");
-    sout("\t3 for year to date");
-    sout("\t4 previous year");
-    sout("\t5 search by vendor");
-    sout("\t6 go back);
-
-    int subInput = scanner.nextInt();
-
-    switch (subInput) {
-        case 1:
-            monthToDateReport(transactions); // call on transactions to show the monthtodate
-            break;
-        case 2: 
-            previousMonthReport(transactions);
-            break;
-        case 3:     
-            ytdReport(transactions);
-            break;
-        case 4: 
-            previousYearsReports(transactions);
-            break;
-        case 5: 
-            searchByVendor(transactions);
-            break;
-        case 6:
-            return;
-        default:
-        sout("nope try again");
     }
-
-[need to have methods for each case]
-
-[monthToDate] 
-    
-    private static void monthToDateReport(ArrayList<Transaction> 
-    transactions) {
-    sout (" enter the start date of the report (
-    YYYY-MM-DD):");
-    String startDate = scanner.nextLine();
-    sout(" enter the end date of the report (YYYY-MM-DD):");
-    String endDate = scanner.nextLine();
-
-    List<Transaction> monthToDateTransactions = 
-    getTransactionsBetweenDates(
-    transactions, startDate, endDate);
-    for (Transaction transaction : monthToDateTransactions) {
-        System.out.println(transaction);
-    }
-[previousMonth]
-
-    private static void previousMonthReport(ArrayList<Transaction> transactions) {
-    System.out.println("Please enter the start date of the report (YYYY-MM-DD):");
-    String startDate = scanner.nextLine();
-    System.out.println("Please enter the end date of the report (YYYY-MM-DD):");
-    String endDate = scanner.nextLine();
-
-    List<Transaction> previousMonthTransactions = getTransactionsBetweenDates(transactions, startDate, endDate);
-    for (Transaction transaction : previousMonthTransactions) {
-        System.out.println(transaction);
-    }}
-
-[ytd]
-
-    private static void yearToDateReport(ArrayList<Transaction> transactions) {
-    System.out.println("Please enter the start date of the report (YYYY-MM-DD):");
-    String startDate = scanner.nextLine();
-    System.out.println("Please enter the end date of the report (YYYY-MM-DD):");
-    String endDate = scanner.nextLine();
-
-    List<Transaction> yearToDateTransactions = getTransactionsBetweenDates(transactions, startDate, endDate);
-    for (Transaction transaction : yearToDateTransactions) {
-        System.out.println(transaction);
-    }}
-
-[previousYear]
-
-        private static void previousYearReport(ArrayList<Transaction> transactions) {
-    System.out.println("Please enter the start date of the report (YYYY-MM-DD):");
-    String startDate = scanner.nextLine();
-    System.out.println("Please enter the end date of the report (YYYY-MM-DD):");
-    String endDate = scanner.nextLine();
-
-    List<Transaction> previousYearTransactions = getTransactionsBetweenDates(transactions, startDate, endDate);
-    for (Transaction transaction : previousYearTransactions) {
-        System.out.println(transaction);
-    }}
-[vendor]
-    
-    private static void vendorReport(ArrayList<Transaction> transactions) {
-    System.out.println("Please enter the name of the vendor:");
-    String vendorName = scanner.nextLine();
-    
-    List<Transaction> vendorTransactions = getTransactionsByVendor(
-    transactions, vendorName);
-    for (Transaction transaction : vendorTransactions) {
-        System.out.println(transaction);
-    }}
-
-
-
-
-
-
-### Transaction class 
-
-    public class Transaction {
-        private String date;
-        private String time;
-        private String description;
-        private String vendor;
-        private double amount;
-
-    public Transaction(String date, String time, String description,
-                       String vendor, double amount)
-    {
-        this.date = date;
-        this.time = time;
-        this.description = description;
-        this.vendor = vendor;
-        this.amount = amount;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getVendor() {
-        return vendor;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-
-}
-
-
-    
 
 
 
