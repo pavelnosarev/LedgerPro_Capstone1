@@ -14,6 +14,7 @@ public class LedgerPro_Capstone1 {
     static Scanner scanner = new Scanner(System.in);
     static FileWriter writer;
     static LocalDate today = LocalDate.now();
+
     public static void main(String[] args) throws IOException {
         loadTransactions();
         while (true) {
@@ -47,7 +48,8 @@ public class LedgerPro_Capstone1 {
             }
         }
     }
-    private static void reportsMenu(Scanner scanner, ArrayList<Transaction> transactions){
+
+    private static void reportsMenu(Scanner scanner, ArrayList<Transaction> transactions) {
 
         System.out.println("Which report do you need?");
         System.out.println("\t1 for month to date");
@@ -107,21 +109,59 @@ public class LedgerPro_Capstone1 {
     }
 
     public static List<Transaction> getTransactionsBetweenDates(
-            List<Transaction> transactions, String startDateStr, String endDateStr) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDate startDate = LocalDate.parse(startDateStr, formatter);
-        LocalDate endDate = LocalDate.parse(endDateStr, formatter);
-
+            List<Transaction> transactions, LocalDate startDate, LocalDate endDate) {
         List<Transaction> filteredTransactions = new ArrayList<>();
 
         for (Transaction transaction : transactions) {
-            LocalDate transactionDate = LocalDate.parse(transaction.getDate(), formatter);
+            LocalDate transactionDate = LocalDate.parse(transaction.getDate());
             if (!transactionDate.isBefore(startDate) && !transactionDate.isAfter(endDate)) {
                 filteredTransactions.add(transaction);
             }
         }
         return filteredTransactions;
     }
+
+    private static void addDeposit(Scanner scanner, ArrayList<Transaction> transactions) {
+        System.out.println("Enter the date of the deposit (DD-MM-YYYY):");
+        String date = scanner.nextLine();
+
+        System.out.println("Enter the time of the deposit (HH:MM:SS):");
+        String time = scanner.nextLine();
+
+        System.out.println("Enter the description of the deposit:");
+        String description = scanner.nextLine();
+
+        System.out.println("Enter the vendor of the deposit:");
+        String vendor = scanner.nextLine();
+
+        double amount = 0.0;
+        boolean validAmount = false;
+        while (!validAmount) {
+            System.out.println("Enter the amount of the deposit:");
+            String amountStr = scanner.nextLine();
+            try {
+                amount = Double.parseDouble(amountStr);
+                validAmount = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid amount. Please enter a valid number.");
+            }
+        }
+        Transaction transaction = new Transaction(date, time, description, vendor, amount);
+        transactions.add(transaction);
+        System.out.println("Deposit added successfully.");
+        try {
+            writer = new FileWriter("./src/main/java/com/pn/transaction.txt", true);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+
+}
+
     public static List<Transaction> getTransactionsByVendor(
             List<Transaction> transactions, String vendorName) {
         List<Transaction> filteredTransactions = new ArrayList<>();
@@ -132,41 +172,6 @@ public class LedgerPro_Capstone1 {
             }
         }
         return filteredTransactions;
-    }
-
-
-    private static void addDeposit(
-            Scanner scanner, ArrayList<Transaction> transactions)
-            throws IOException {
-
-
-
-        System.out.println("date of the deposit (DD-MM-YYYY):");
-        String date = scanner.nextLine();
-
-        System.out.println("time of deposit (HH:MM):");
-        String time = scanner.nextLine();
-
-        System.out.println("description of deposit: ");
-        String description = scanner.nextLine();
-
-        System.out.println("Enter the vendor of the deposit:");
-        String vendor = scanner.nextLine();
-
-        System.out.println("Enter the amount of the deposit:");
-        double amount = Double.parseDouble(scanner.nextLine());
-
-        Transaction transaction = new Transaction(date, time, description, vendor, Double.parseDouble(String.valueOf(amount)));
-        transactions.add(transaction);
-        System.out.println("Deposit added successfully.");
-        try {
-            writer = new FileWriter("./src/main/java/com/pn/transaction.txt", true);
-
-            writer.write( date + "| " +  time + "| " + description + "| " + vendor + "| " + amount + "\n");
-            writer.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 
@@ -183,23 +188,31 @@ public class LedgerPro_Capstone1 {
         System.out.println("Enter the vendor of the payment:");
         String vendor = scanner.nextLine();
 
-        System.out.println("Enter the amount of the payment:");
-        String amount = scanner.nextLine();
-
-        Transaction transaction = new Transaction(
-                date, time, description, vendor, -Double.parseDouble(amount));
+        double amount = 0.0;
+        boolean validAmount = false;
+        while (!validAmount) {
+            System.out.println("Enter the amount of the payment:");
+            String amountStr = scanner.nextLine();
+            try {
+                amount = Double.parseDouble(amountStr);
+                validAmount = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid amount. Please enter a valid number.");
+            }
+        }
+        Transaction transaction = new Transaction(date, time, description, vendor, -amount);
         transactions.add(transaction);
         System.out.println("Payment made successfully.");
-
         try {
             writer = new FileWriter("./src/main/java/com/pn/transaction.txt", true);
 
-            writer.write("\nPayment: " + date + " | " +  time + " | " + description + " | " + vendor + " | " + amount + " |");
+            writer.write("\nPayment: " + date + " | " + time + " | " + description + " | " + vendor + " | " + amount + " |");
             writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     private static void viewLedger(ArrayList<Transaction> transactions) {
         System.out.println("All transactions:");
@@ -240,97 +253,5 @@ public class LedgerPro_Capstone1 {
 
         }
         reader.close();
-    }
+    }}
 
-}
-
-
-
-
-
-
-
-
-
-// read from file ONCE
-//iterate through each line  + split in ()while loop
-//create a new transaction + load in arrayList
-//load inside transaction + add to ArrayList
-
-// converting from string to a date
-
-//        String date1= "2000-12-01"; // yyyy-mm-dd
-
-
-//create a pattern
-//DateTime Formatter dateTimeFormatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd"); make sure to import datetimeformatter
-
-// parse/covert the date using the created pattern
-// LocalDate formattedDate1 = LocalDate.parse(date1, dateTimeFormatter1);
-//print
-//System.out.println(formattedDate1.getYear());
-
-
-
-
-
-
-
-//    String date2 = "12-01-00"; //mm-dd-yy
-//        String date3 = "01-12-00"; // dd=mm-yy
-
-
-
-
-// from beginning of year
-
-//if value is in given date range
-
-
-
-
-
-//        String date = "2023-04-15";
-//        String time = "10:13:25";
-//        String dateTime = date + " " + time; // "2023-04-15 10:13:25"
-//        // 1: Create a pattern for the date
-//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//
-////        2: Parse/convert the date using the created pattern
-//        LocalDateTime localDateTime = LocalDateTime.parse(dateTime, dateTimeFormatter);
-//
-//        System.out.println(localDateTime);/
-//
-//
-//        / converting from a date to a string
-
-// .compare
-
-//        String date = "2023-05-03";
-//        String time = "10:13:25";
-//        String dateTime = date + " " + time; // "2023-04-15 10:13:25"
-//        // 1: Create a pattern for the date
-//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//
-////        2: Parse/convert the date using the created pattern
-//        LocalDateTime localDateTime = LocalDateTime.parse(dateTime, dateTimeFormatter);
-
-// LocalDateTime now = LocalDateTime.now();
-// int comparison = transactionlDateTime.compareTo(now);
-// if (comparison > 0) {
-//          System.out.println("comes after");
-
-//} else {'
-// System.out.println("comes before");
-//
-
-//
-//        System.out.println(now.compareTo(LocalDateTime));
-
-
-
-///// MONTHTODATE
-//   Month currentMonth = LocalDateTime.now().getMonth();
-
-// LocalDateTime currentDateTIme = transactionDateTime.getMonth();
-//System.out.println(transactionMonth.compareTo(currentMonth));
