@@ -52,14 +52,16 @@ public class LedgerPro_Capstone1 {
     private static void reportsMenu(Scanner scanner, ArrayList<Transaction> transactions) {
 
         System.out.println("Which report do you need?");
-        System.out.println("\t1 for month to date");
-        System.out.println("\t2 for previous month");
-        System.out.println("\t3 for year to date");
+        System.out.println("\t1 month to date");
+        System.out.println("\t2 previous month");
+        System.out.println("\t3 year to date");
         System.out.println("\t4 previous year");
-        System.out.println("\t5 search by vendor");
-        System.out.println("\t6 go back");
+        System.out.println("\t5 vendor");
+        System.out.println("\t6 for main menu");
 
-        int choice = scanner.nextInt();
+        int choice = Integer.parseInt(scanner.nextLine());
+
+
 
         switch (choice) {
             case 1:
@@ -151,16 +153,12 @@ public class LedgerPro_Capstone1 {
         System.out.println("Deposit added successfully.");
         try {
             writer = new FileWriter("./src/main/java/com/pn/transaction.txt", true);
-
+            writer.write(transaction.toString() + "\n");
+            writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
-
-
-
-}
 
     public static List<Transaction> getTransactionsByVendor(
             List<Transaction> transactions, String vendorName) {
@@ -207,6 +205,7 @@ public class LedgerPro_Capstone1 {
             writer = new FileWriter("./src/main/java/com/pn/transaction.txt", true);
 
             writer.write("\nPayment: " + date + " | " + time + " | " + description + " | " + vendor + " | " + amount + " |");
+            writer.write(transaction.toString() + "\n");
             writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -253,5 +252,7 @@ public class LedgerPro_Capstone1 {
 
         }
         reader.close();
-    }}
+    }
+}
+
 
